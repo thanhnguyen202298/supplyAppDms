@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2046
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpChainService", "SpChainService\SpChainService.csproj", "{B53FE470-DA51-4001-9BCA-59F46F34531D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPData", "SPData\SPData.csproj", "{572BF821-D708-4F5E-B142-CAD400B4DABE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B53FE470-DA51-4001-9BCA-59F46F34531D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B53FE470-DA51-4001-9BCA-59F46F34531D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B53FE470-DA51-4001-9BCA-59F46F34531D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B53FE470-DA51-4001-9BCA-59F46F34531D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{572BF821-D708-4F5E-B142-CAD400B4DABE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{572BF821-D708-4F5E-B142-CAD400B4DABE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{572BF821-D708-4F5E-B142-CAD400B4DABE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{572BF821-D708-4F5E-B142-CAD400B4DABE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {48E6487F-B818-4873-9C00-50F27ABF2353}
+	EndGlobalSection
+EndGlobal

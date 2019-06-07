@@ -1,0 +1,44 @@
+package com.sskey.dms.utils;
+
+public class Constants {
+    public static String app = "DMS-SSKEY-";
+    public static String KEY_USER = "nguoidung";
+    public static String KEY_EMAILUSER = "email";
+    public static String KEY_PHONE = "phone";
+    public static String KEY_PASSWORD = "password";
+    public static String KEY_MA = "manguoidung";
+    public static String KEY_TEN = "tennguoidung";
+    public static String KEY_LOAI = "loainguoidung";
+    public static String KEY_DIACHI = "diachi";
+
+    public static String OrderObj ="ObjectOrder";
+    public static String OrderRequest ="OldOrder";
+    public static int NewOrder =102300;
+    public static int OldOrder =102311;
+
+    public static String inallOrder = "Tất cả";
+    public static String inProgress = "Đặt hàng";
+    public static String inCheckout = "Cửa hàng xác nhận";
+    public static String mDeliver = "Đang giao";
+    public static String mFinished = "Đã giao";
+    public static String inErrorDel = "Giao hàng thất bại";
+    public static String inDelete = "Đã hủy";
+
+    public static String SendOrder = "ĐẶT HÀNG";
+    public static String GetIt = "XÁC NHẬN";
+    public static String CancelIt = "HỦY ĐƠN HÀNG";
+    public static String Back = "QUAY LẠI";
+    public static String Status = "StatusStore";
+
+    public static String CUSTOMER = app+"CUSTOMER";
+
+    public static String StartFromDetail= "DetailCalling";
+    public static String StartFromNotify= "StartFromNotify";
+    public static String StartFromLogin= "StartFromLogin";
+
+    public static String SynchronizeDate= "SynchronizeDate_SSkeyJsc";
+    public static String SynchronizeMaxord= "SynchronizeMaxord_SSkeyJsc";
+
+    public static int statusCart = 0;
+
+}

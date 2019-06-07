@@ -1,0 +1,86 @@
+package com.sskey.dms.model;
+
+import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
+
+public class SanPham {
+    @SerializedName("ItemID")
+    private String ItemID;
+    @SerializedName("ItemName")
+    private String ItemName;
+    @SerializedName("Volume")
+    private double Volume;
+    @SerializedName("Color")
+    private String Color;
+    @SerializedName("Image")
+    private String Image;
+
+
+    List<DonHang_Detail> DonHangChiTiets;
+
+    public SanPham() {
+
+    }
+
+    public SanPham(String itemID, String itemName, double volume, String color, String image, List<DonHang_Detail> donHangChiTiets) {
+        ItemID = itemID;
+        ItemName = itemName;
+        Volume = volume;
+        Color = color;
+        Image = image;
+        DonHangChiTiets = null;
+    }
+
+    public String getItemID() {
+        return ItemID;
+    }
+
+    public void setItemID(String itemID) {
+        ItemID = itemID;
+    }
+
+    public String getItemName() {
+        return ItemName;
+    }
+
+    public void setItemName(String itemName) {
+        ItemName = itemName;
+    }
+
+    public double getVolume() {
+        return Volume;
+    }
+
+    public void setVolume(double volume) {
+        Volume = volume;
+    }
+
+    public String getColor() {
+        return Color;
+    }
+
+    public void setColor(String color) {
+        Color = color;
+    }
+
+    public String getImage() {
+        return Image;
+    }
+
+    public void setImage(String image) {
+        Image = image;
+    }
+
+    @Override
+    public String toString() {
+        return "SanPham{" +
+                "ItemID='" + ItemID + '\'' +
+                ", ItemName='" + ItemName + '\'' +
+                ", Volume=" + Volume +
+                ", Color='" + Color + '\'' +
+                ", Image='" + Image + '\'' +
+                ", DonHangChiTiets=" + DonHangChiTiets +
+                '}';
+    }
+}

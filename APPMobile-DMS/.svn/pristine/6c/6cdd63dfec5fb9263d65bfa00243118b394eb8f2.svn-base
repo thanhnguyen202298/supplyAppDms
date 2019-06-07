@@ -1,0 +1,89 @@
+package com.example.sskey.dms.Order;
+
+import android.content.Context;
+import android.util.Log;
+
+import com.example.sskey.dms.OrderDetail.IOrderSynchronize;
+import com.example.sskey.dms.Utils.CallbackSSk;
+import com.example.sskey.dms.Utils.UtilBasic;
+import com.sskey.dms.data.remote.APIUtils;
+import com.sskey.dms.data.remote.SOService;
+import com.sskey.dms.model.DonHang_Master;
+import com.sskey.dms.model.Customer;
+import com.sskey.dms.utils.Constants;
+import com.sskey.dms.utils.PreferenceUtils;
+
+import java.util.Date;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class OrderSynchronize implements IOrderSynchronize {
+
+    private Customer user;
+    private Context ctx;
+    private SOService vservice;
+    CallbackSSk<List<DonHang_Master>> myc;
+
+    public OrderSynchronize(Customer nguoiDung, Context context, CallbackSSk<List<DonHang_Master>> callbackSSk) {
+        ctx = context;
+        user = nguoiDung;
+        vservice = APIUtils.getSOService();
+        myc = callbackSSk;
+    }
+
+    @Override
+    public void readNewOrder() {
+        user = UtilBasic.getUser(ctx);
+        if (user == null) return;
+        if (user.LoaiNguoiDung == 0) {
+            vservice.getNotifyByShop(user.MaNguoiDung).enqueue(new Callback<List<DonHang_Master>>() {
+                @Override
+                public void onResponse(Call<List<DonHang_Master>> call, Response<List<DonHang_Master>> response) {
+                    myc.Success(response.body(), response.message()+" ::bạn bán");
+                    Log.e("<<Servicesss", "shop");
+                }
+
+                @Override
+                public void onFailure(Call<List<DonHang_Master>> call, Throwable t) {
+                    myc.Fail(t);
+                }
+            });
+        } else if (user.LoaiNguoiDung == 3) {
+            vservice.getNotifyByPostMan(user.MaNguoiDung).enqueue(new Callback<List<DonHang_Master>>() {
+                @Override
+                public void onResponse(Call<List<DonHang_Master>> call, Response<List<DonHang_Master>> response) {
+                    myc.Success(response.body(), response.message()+" ::để giao");
+                    Log.e("<<Servicesss", "user dat hang");
+                }
+
+                @Override
+                public void onFailure(Call<List<DonHang_Master>> call, Throwable t) {
+                    myc.Fail(t);
+                }
+            });
+        }
+
+        vservice.getNotifyByUser(user.MaNguoiDung).enqueue(new Callback<List<DonHang_Master>>() {
+            @Override
+            public void onResponse(Call<List<DonHang_Master>> call, Response<List<DonHang_Master>> response) {
+                myc.Success(response.body(), response.message()+" ::bạn mua");
+                Log.e("<<Servicesss", "user dat hang");
+            }
+
+            @Override
+            public void onFailure(Call<List<DonHang_Master>> call, Throwable t) {
+                myc.Fail(t);
+            }
+        });
+
+    }
+
+    @Override
+    public String getSyncDate() {
+        return PreferenceUtils.prefs.getString(Constants.SynchronizeDate, new Date().toGMTString());
+    }
+
+}

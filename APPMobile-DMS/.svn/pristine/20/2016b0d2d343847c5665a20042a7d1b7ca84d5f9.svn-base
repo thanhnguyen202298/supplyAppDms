@@ -1,0 +1,113 @@
+package com.sskey.dms.model;
+
+import java.util.HashMap;
+import java.util.List;
+
+public class DonHang_Master {
+    public String maDonHang;
+    public String maNguoiDung;
+    public String thoiGianDatHang;
+    public String ngayGioTrangThai;
+
+    public String diaChiGiao;
+    public double tongTien;
+    public String trangThai;
+    public int danhGia;
+    public String loaiYeuCau;//ghi chú
+    public Customer nguoiDung;
+    public String shopName;
+    public String shopId;
+    public String shopPhone;
+    public String thoiGianGiao;
+
+    public String postMan;
+    public boolean syncPostMan;
+
+    public boolean synchronizedUser;
+    public boolean synchronizedShop;
+
+//
+    public List<DonHang_Detail> donHangChiTiets;
+
+    public DonHang_Master() {
+
+
+    }
+    public void setDonHangChiTiets(HashMap<Integer,DonHang_Detail> f) {
+
+        for (Integer i :f.keySet()
+             ) {
+            donHangChiTiets.add(f.get(i));
+        }
+    }
+
+
+
+
+    public DonHang_Master(String maDoHang, String maNguoiDungID, String thoiGianDatHang, double tongTien, String trangThai, String ngayGioTrangThai, int danhGia, String diaChiGiaoHang) {
+        maDonHang = maDoHang;
+        maNguoiDung = maNguoiDungID;
+        this.thoiGianDatHang = thoiGianDatHang;
+        this.tongTien = tongTien;
+        this.trangThai = trangThai;
+        this.ngayGioTrangThai = ngayGioTrangThai;
+        this.danhGia = danhGia;
+        diaChiGiao = diaChiGiaoHang;
+    }
+//
+//    public String getMaDoHang() {
+//        return MaDoHang;
+//    }
+//
+//    public void setMaDoHang(String maDoHang) {
+//        MaDoHang = maDoHang;
+//    }
+//
+//    public String getMaNguoiDungID() {
+//        return MaNguoiDungID;
+//    }
+//
+//    public void setMaNguoiDungID(String maNguoiDungID) {
+//        MaNguoiDungID = maNguoiDungID;
+//    }
+//
+//    public Date getThoiGianDatHang() {
+//        return ThoiGianDatHang;
+//    }
+//
+//    public void setThoiGianDatHang(Date thoiGianDatHang) {
+//        ThoiGianDatHang = thoiGianDatHang;
+//    }
+//
+//    public double getTongTien() {
+//        return TongTien;
+//    }
+//
+//    public void setTongTien(double tongTien) {
+//        TongTien = tongTien;
+//    }
+//
+//    public String getTrangThai() {
+//        return TrangThai;
+//    }
+//
+//    public void setTrangThai(String trangThai) {
+//        TrangThai = trangThai;
+//    }
+//
+//    public Date getNgayGioTrangThai() {
+//        return NgayGioTrangThai;
+//    }
+//
+//    public void setNgayGioTrangThai(Date ngayGioTrangThai) {
+//        NgayGioTrangThai = ngayGioTrangThai;
+//    }
+//
+//    public int getDanhGia() {
+//        return DanhGia;
+//    }
+//
+//    public void setDanhGia(int danhGia) {
+//        DanhGia = danhGia;
+//    }
+}

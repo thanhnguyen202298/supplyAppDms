@@ -1,0 +1,4 @@
+package com.sskey.dms.model;
+
+public class Order {
+}

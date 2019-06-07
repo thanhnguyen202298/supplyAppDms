@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="9ee0492c607a4835b03b53dd68a5f47d" Name="Diagram1">
+        <EntityTypeShape EntityType="SupplychainModel.BallanceSum" Width="1.5" PointX="7.75" PointY="2.25" />
+        <EntityTypeShape EntityType="SupplychainModel.Customer" Width="1.5" PointX="0.75" PointY="0.875" />
+        <EntityTypeShape EntityType="SupplychainModel.Employee" Width="1.5" PointX="0.75" PointY="4.875" />
+        <EntityTypeShape EntityType="SupplychainModel.Inventory" Width="1.5" PointX="3" PointY="0.75" />
+        <EntityTypeShape EntityType="SupplychainModel.PriceList" Width="1.5" PointX="5.25" PointY="9.375" />
+        <EntityTypeShape EntityType="SupplychainModel.SaleLine" Width="1.5" PointX="5.25" PointY="4.5" />
+        <EntityTypeShape EntityType="SupplychainModel.SaleOrder" Width="1.5" PointX="3" PointY="4.125" />
+        <EntityTypeShape EntityType="SupplychainModel.UserInfo" Width="1.5" PointX="3" PointY="9.625" />
+        <AssociationConnector Association="SupplychainModel.FK_SaleOrder_Customer" />
+        <AssociationConnector Association="SupplychainModel.FK_SaleOrder_Employee" />
+        <AssociationConnector Association="SupplychainModel.FK_UserInfo_Employee" />
+        <AssociationConnector Association="SupplychainModel.FK_PriceList_Inventory" />
+        <AssociationConnector Association="SupplychainModel.FK_SaleLine_Inventory" />
+        <AssociationConnector Association="SupplychainModel.FK_SaleLine_SaleOrder" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -1,0 +1,204 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="SupplychainModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="BallanceSum">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="SaleDate" Type="datetime" />
+    <Property Name="SaleMan" Type="uniqueidentifier" />
+    <Property Name="TotalBallance" Type="decimal" Precision="18" Scale="0" />
+    <Property Name="InputDailyAmount" Type="decimal" Precision="18" Scale="0" />
+  </EntityType>
+  <EntityType Name="Customer">
+    <Key>
+      <PropertyRef Name="CustAccount" />
+    </Key>
+    <Property Name="CustAccount" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="CustGroup" Type="nvarchar" MaxLength="50" />
+    <Property Name="CustName" Type="nvarchar" MaxLength="50" />
+    <Property Name="Address" Type="nvarchar" MaxLength="200" />
+    <Property Name="Tell" Type="nvarchar" MaxLength="30" />
+    <Property Name="SaleMan" Type="uniqueidentifier" />
+  </EntityType>
+  <EntityType Name="Employee">
+    <Key>
+      <PropertyRef Name="EmployeeId" />
+    </Key>
+    <Property Name="EmployeeId" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="EmployeeName" Type="nvarchar" MaxLength="50" />
+    <Property Name="Address" Type="nvarchar" MaxLength="200" />
+    <Property Name="Tell" Type="nvarchar" MaxLength="30" />
+    <Property Name="VehicleDefault" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Inventory">
+    <Key>
+      <PropertyRef Name="ItemID" />
+    </Key>
+    <Property Name="ItemID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="ItemName" Type="nvarchar" MaxLength="50" />
+    <Property Name="Color" Type="nvarchar" MaxLength="50" />
+    <Property Name="Volume" Type="int" />
+    <Property Name="Onhand" Type="int" />
+    <Property Name="Image" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="PriceList">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="TabGroupAll" Type="nvarchar" MaxLength="50" />
+    <Property Name="Code" Type="nvarchar" MaxLength="50" />
+    <Property Name="ItemID" Type="uniqueidentifier" />
+    <Property Name="UnitPrice" Type="decimal" Precision="18" Scale="0" />
+    <Property Name="FromDate" Type="datetime" />
+    <Property Name="ToDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="SaleLine">
+    <Key>
+      <PropertyRef Name="LotID" />
+    </Key>
+    <Property Name="LotID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="SaleID" Type="uniqueidentifier" />
+    <Property Name="LineNum" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="ItemID" Type="uniqueidentifier" />
+    <Property Name="Quantity" Type="int" />
+    <Property Name="SalePrice" Type="decimal" Precision="18" Scale="0" />
+    <Property Name="LineAmount" Type="decimal" Precision="18" Scale="0" />
+    <Property Name="ItemName" Type="nvarchar" MaxLength="50" />
+    <Property Name="ItemColor" Type="nvarchar" MaxLength="20" />
+  </EntityType>
+  <EntityType Name="SaleOrder">
+    <Key>
+      <PropertyRef Name="SaleID" />
+    </Key>
+    <Property Name="SaleID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="CustAccount" Type="uniqueidentifier" />
+    <Property Name="SalesMan" Type="uniqueidentifier" />
+    <Property Name="CreateDateTime" Type="datetime" />
+    <Property Name="Description" Type="nvarchar" MaxLength="50" />
+    <Property Name="SaleStatus" Type="nvarchar" MaxLength="50" />
+    <Property Name="ShipTo" Type="nvarchar" MaxLength="50" />
+    <Property Name="Amount" Type="decimal" Precision="18" Scale="0" />
+    <Property Name="DeliTime" Type="datetime" />
+    <Property Name="LotId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ShopName" Type="nvarchar" MaxLength="50" />
+    <Property Name="ShopPhone" Type="nvarchar" MaxLength="20" />
+  </EntityType>
+  <EntityType Name="UserInfo">
+    <Key>
+      <PropertyRef Name="UserID" />
+    </Key>
+    <Property Name="UserID" Type="uniqueidentifier" Nullable="false" />
+    <Property Name="UserName" Type="nvarchar" MaxLength="50" />
+    <Property Name="PassWord" Type="nvarchar" MaxLength="20" />
+    <Property Name="EmployeeId" Type="uniqueidentifier" />
+    <Property Name="Role" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <Association Name="FK_PriceList_Inventory">
+    <End Role="Inventory" Type="Self.Inventory" Multiplicity="0..1" />
+    <End Role="PriceList" Type="Self.PriceList" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Inventory">
+        <PropertyRef Name="ItemID" />
+      </Principal>
+      <Dependent Role="PriceList">
+        <PropertyRef Name="ItemID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SaleLine_Inventory">
+    <End Role="Inventory" Type="Self.Inventory" Multiplicity="0..1" />
+    <End Role="SaleLine" Type="Self.SaleLine" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Inventory">
+        <PropertyRef Name="ItemID" />
+      </Principal>
+      <Dependent Role="SaleLine">
+        <PropertyRef Name="ItemID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SaleLine_SaleOrder">
+    <End Role="SaleOrder" Type="Self.SaleOrder" Multiplicity="0..1" />
+    <End Role="SaleLine" Type="Self.SaleLine" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SaleOrder">
+        <PropertyRef Name="SaleID" />
+      </Principal>
+      <Dependent Role="SaleLine">
+        <PropertyRef Name="SaleID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SaleOrder_Customer">
+    <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
+    <End Role="SaleOrder" Type="Self.SaleOrder" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customer">
+        <PropertyRef Name="CustAccount" />
+      </Principal>
+      <Dependent Role="SaleOrder">
+        <PropertyRef Name="CustAccount" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SaleOrder_Employee">
+    <End Role="Employee" Type="Self.Employee" Multiplicity="0..1" />
+    <End Role="SaleOrder" Type="Self.SaleOrder" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Employee">
+        <PropertyRef Name="EmployeeId" />
+      </Principal>
+      <Dependent Role="SaleOrder">
+        <PropertyRef Name="SalesMan" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserInfo_Employee">
+    <End Role="Employee" Type="Self.Employee" Multiplicity="0..1" />
+    <End Role="UserInfo" Type="Self.UserInfo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Employee">
+        <PropertyRef Name="EmployeeId" />
+      </Principal>
+      <Dependent Role="UserInfo">
+        <PropertyRef Name="EmployeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="SupplychainModelStoreContainer">
+    <EntitySet Name="BallanceSum" EntityType="Self.BallanceSum" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Employee" EntityType="Self.Employee" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Inventory" EntityType="Self.Inventory" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PriceList" EntityType="Self.PriceList" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SaleLine" EntityType="Self.SaleLine" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="SaleOrder" EntityType="Self.SaleOrder" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserInfo" EntityType="Self.UserInfo" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_PriceList_Inventory" Association="Self.FK_PriceList_Inventory">
+      <End Role="Inventory" EntitySet="Inventory" />
+      <End Role="PriceList" EntitySet="PriceList" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SaleLine_Inventory" Association="Self.FK_SaleLine_Inventory">
+      <End Role="Inventory" EntitySet="Inventory" />
+      <End Role="SaleLine" EntitySet="SaleLine" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SaleLine_SaleOrder" Association="Self.FK_SaleLine_SaleOrder">
+      <End Role="SaleOrder" EntitySet="SaleOrder" />
+      <End Role="SaleLine" EntitySet="SaleLine" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SaleOrder_Customer" Association="Self.FK_SaleOrder_Customer">
+      <End Role="Customer" EntitySet="Customer" />
+      <End Role="SaleOrder" EntitySet="SaleOrder" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SaleOrder_Employee" Association="Self.FK_SaleOrder_Employee">
+      <End Role="Employee" EntitySet="Employee" />
+      <End Role="SaleOrder" EntitySet="SaleOrder" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserInfo_Employee" Association="Self.FK_UserInfo_Employee">
+      <End Role="Employee" EntitySet="Employee" />
+      <End Role="UserInfo" EntitySet="UserInfo" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

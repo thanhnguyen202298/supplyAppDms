@@ -1,0 +1,230 @@
+package com.example.sskey.dms.Order;
+
+import android.Manifest;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.app.Service;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.IBinder;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.example.sskey.dms.Utils.UtilBasic;
+import com.google.android.gms.maps.model.LatLng;
+import com.sskey.dms.data.remote.APIUtils;
+import com.sskey.dms.data.remote.SOService;
+import com.sskey.dms.model.CurrentPosition;
+//import com.sskey.dms.model.StatusEmp;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class TestService extends Service {
+    private static final int PER_TIME = 1000;
+    private static final int MIN_DISTANCE = 2;
+    public LocationManager locationManager;
+    public MyLocationListener listener;
+    public Location previousBestLocation = null;
+    public static int SServiceID = 12397;
+
+    CurrentPosition myLocation;
+    SOService mService;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        listener = new MyLocationListener();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+//        return super.onStartCommand(intent, flags, startId);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return startId;
+        }
+        Log.e("<<thanhserver", "startcommand");
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, PER_TIME, MIN_DISTANCE, (LocationListener) listener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, PER_TIME, MIN_DISTANCE, listener);
+        return startId;
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+    protected boolean isBetterLocation(Location location, Location currentBestLocation) {
+        if (currentBestLocation == null) {
+            return true;
+        }
+        Log.e("<<<isBetterLocation", location.getLatitude() + "");
+        long timeDelta = location.getTime() - currentBestLocation.getTime();
+        boolean isSignificantlyNewer = timeDelta > PER_TIME;
+        boolean isSignificantlyOlder = timeDelta < -PER_TIME;
+        boolean isNewer = timeDelta > 0;
+
+        if (isSignificantlyNewer) {
+            return true;
+        } else if (isSignificantlyOlder) {
+            return false;
+        }
+
+        int accuracyDelta = (int) (location.getAccuracy() - currentBestLocation.getAccuracy());
+        boolean isLessAccurate = accuracyDelta > 0;
+        boolean isMoreAccurate = accuracyDelta < 0;
+        boolean isSignificantlyLessAccurate = accuracyDelta > 200;
+
+        boolean isFromSameProvider = isSameProvider(location.getProvider(),
+                currentBestLocation.getProvider());
+
+        if (isMoreAccurate) {
+            return true;
+        } else if (isNewer && !isLessAccurate) {
+            return true;
+        } else if (isNewer && !isSignificantlyLessAccurate && isFromSameProvider) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Checks whether two providers are the same
+     */
+    private boolean isSameProvider(String provider1, String provider2) {
+        if (provider1 == null) {
+            return provider2 == null;
+        }
+        return provider1.equals(provider2);
+    }
+//
+//    @Override
+//    public void onTaskRemoved(Intent rootIntent) {
+//        PendingIntent service = PendingIntent.getService(
+//                getApplicationContext(),
+//                1001,
+//                new Intent(getApplicationContext(), TestService.class),
+//                PendingIntent.FLAG_ONE_SHOT);
+//
+//        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+//        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, PER_TIME, service);
+//    }
+
+    @Override
+    public void onDestroy() {
+        // handler.removeCallbacks(sendUpdatesToUI);
+        Log.e("<<thanhserver", "destroy");
+        super.onDestroy();
+        locationManager.removeUpdates(listener);
+        setLoops();
+    }
+
+    private void setLoops() {
+        Intent it = new Intent(getBaseContext(), TestService.class);
+
+        PendingIntent peservcie = PendingIntent.getService(getBaseContext(), SServiceID, it, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager alm = (AlarmManager) getBaseContext().getSystemService(Context.ALARM_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            alm.setAlarmClock(new AlarmManager.AlarmClockInfo(System.currentTimeMillis() + 3000, peservcie), peservcie);
+        alm.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 3000, peservcie);
+
+    }
+
+    private void cancelNow() {
+        stopSelf();
+    }
+
+    public class MyLocationListener implements LocationListener {
+
+        public void onLocationChanged(final Location loc) {
+            Log.e("<<<location change", "Myloctionchange: " + loc.getLatitude());
+            if (isBetterLocation(loc, previousBestLocation)) {
+                Log.e("<<<IsBesster change", "Myloctionchange");
+                myLocation = new CurrentPosition();
+                myLocation.setLongitue(loc.getLongitude());
+                myLocation.setLatitue(loc.getLatitude());
+                myLocation.setMaNV("NV18070014");
+                myLocation.setStatus("out");
+                myLocation.setDate(UtilBasic.get_yyyyMMddHHmmss().format(Calendar.getInstance().getTime()));
+                myLocation.setAddress(GetAddress(loc));
+
+                Location company = new Location("");
+                company.setLatitude(10.729389);
+                company.setLongitude(106.721850);
+
+                Location curentLocate = new Location("");
+                curentLocate.setLatitude(myLocation.getLatitue());
+                curentLocate.setLongitude(myLocation.getLongitue());
+
+                float distanceInMeters = company.distanceTo(curentLocate);
+//                if(distanceInMeters > 50)
+//                {
+//                    SendLocation(myLocation);
+//                }
+                SendLocation(myLocation);
+
+            }
+        }
+
+        public String GetAddress(Location location) {
+            try {
+                Geocoder geocoder = new Geocoder(TestService.this, Locale.getDefault());
+                List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                return addresses.get(0).getAddressLine(0);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        public void onProviderDisabled(String provider) {
+            Toast.makeText(getApplicationContext(), "Gps Disabled", Toast.LENGTH_SHORT).show();
+        }
+
+        public void onProviderEnabled(String provider) {
+            Toast.makeText(getApplicationContext(), "Gps Enabled", Toast.LENGTH_SHORT).show();
+        }
+
+        public void SendLocation(CurrentPosition currentPosition) {
+            Log.e("<<thanhserver", "sendservice");
+            mService = APIUtils.getServiceForAdmin();
+            mService.savePosition(currentPosition).enqueue(new Callback<List<CurrentPosition>>() {
+                @Override
+                public void onResponse(Call<List<CurrentPosition>> call, Response<List<CurrentPosition>> response) {
+                    response.body();
+                    Log.e("<<Sendloc successfull: ", "sendloging: " + response.message());
+                    cancelNow();
+                }
+
+                @Override
+                public void onFailure(Call<List<CurrentPosition>> call, Throwable t) {
+                    Log.e("<<Sendloc Fail: ", t.getMessage());
+                }
+            });
+        }
+    }
+}

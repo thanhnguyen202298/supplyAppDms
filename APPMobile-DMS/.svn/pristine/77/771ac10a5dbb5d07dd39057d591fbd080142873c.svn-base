@@ -1,0 +1,305 @@
+package com.sskey.dms.data.remote;
+
+import com.sskey.dms.model.DonHang_Detail;
+import com.sskey.dms.model.DonHang_Master;
+import com.sskey.dms.model.Customer;
+import com.sskey.dms.model.SanPham;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class DataRemoteHelper {
+
+    SOService service;
+
+    public DataRemoteHelper(CallBack callBack) {
+        service = APIUtils.getSOService();
+        ctmCall = callBack;
+    }
+
+    //customer
+    CallBack ctmCall;
+
+    public void getCustomerList(int page) {
+        service.getCustomerList(page).enqueue(new Callback<List<Customer>>() {
+            @Override
+            public void onResponse(Call<List<Customer>> call, Response<List<Customer>> response) {
+                ctmCall.Succeed(response);
+            }
+
+            @Override
+            public void onFailure(Call<List<Customer>> call, Throwable t) {
+                ctmCall.Fail(t);
+            }
+        });
+    }
+
+    public void getCustomerById(String customercode) {
+        service.getCustomerById(customercode).enqueue(new Callback<Customer>() {
+            @Override
+            public void onResponse(Call<Customer> call, Response<Customer> response) {
+                ctmCall.Succeed(response);
+            }
+
+            @Override
+            public void onFailure(Call<Customer> call, Throwable t) {
+                ctmCall.Fail(t);
+            }
+        });
+    }
+
+    public void getCustomerByName(String name) {
+        service.getCustomerByName(name).enqueue(new Callback<Customer>() {
+            @Override
+            public void onResponse(Call<Customer> call, Response<Customer> response) {
+                ctmCall.Succeed(response);
+            }
+
+            @Override
+            public void onFailure(Call<Customer> call, Throwable t) {
+                ctmCall.Fail(t);
+            }
+        });
+    }
+
+    public void doLogin(String sdt, String pas) {
+        service.login(sdt, pas).enqueue(new Callback<Customer>() {
+            @Override
+            public void onResponse(Call<Customer> call, Response<Customer> response) {
+                ctmCall.Succeed(response);
+            }
+
+            @Override
+            public void onFailure(Call<Customer> call, Throwable t) {
+                ctmCall.Fail(t);
+            }
+        });
+    }
+
+    public void doUpdateCustomer(Customer kh) {
+        service.updateCustomer(kh).enqueue(new Callback<SucceedUpdate>() {
+            @Override
+            public void onResponse(Call<SucceedUpdate> call, Response<SucceedUpdate> response) {
+                ctmCall.Succeed(response);
+            }
+
+            @Override
+            public void onFailure(Call<SucceedUpdate> call, Throwable t) {
+                ctmCall.Fail(t);
+            }
+        });
+    }
+
+    public void saveCustomer(String usn, String sdt) {
+        service.saveCustomer(usn, sdt).enqueue(new Callback<Customer>() {
+            @Override
+            public void onResponse(Call<Customer> call, Response<Customer> response) {
+                ctmCall.Succeed(response);
+            }
+
+            @Override
+            public void onFailure(Call<Customer> call, Throwable t) {
+                ctmCall.Fail(t);
+            }
+        });
+    }
+
+    // order
+    public void getOrderList(int page) {
+        service.getOrderList(page).enqueue(new Callback<List<DonHang_Master>>() {
+            @Override
+            public void onResponse(Call<List<DonHang_Master>> call, Response<List<DonHang_Master>> response) {
+                ctmCall.Succeed(response);
+            }
+
+            @Override
+            public void onFailure(Call<List<DonHang_Master>> call, Throwable t) {
+                ctmCall.Fail(t);
+            }
+        });
+    }
+
+    public void getOrderById(String id) {
+        service.getOrderById(id).enqueue(new Callback<DonHang_Master>() {
+            @Override
+            public void onResponse(Call<DonHang_Master> call, Response<DonHang_Master> response) {
+                ctmCall.Succeed(response);
+            }
+
+            @Override
+            public void onFailure(Call<DonHang_Master> call, Throwable t) {
+                ctmCall.Fail(t);
+            }
+        });
+    }
+
+    public void getOrderListByUser(int page, String usncode, String status) {
+        service.getListByUser(page, usncode, status).enqueue(new Callback<List<DonHang_Master>>() {
+            @Override
+            public void onResponse(Call<List<DonHang_Master>> call, Response<List<DonHang_Master>> response) {
+                ctmCall.Succeed(response);
+            }
+
+            @Override
+            public void onFailure(Call<List<DonHang_Master>> call, Throwable t) {
+                ctmCall.Fail(t);
+            }
+        });
+    }
+
+    public void getOrderListByShop(int page, String usncode, String status) {
+        service.getListByShop(page, usncode, status).enqueue(new Callback<List<DonHang_Master>>() {
+            @Override
+            public void onResponse(Call<List<DonHang_Master>> call, Response<List<DonHang_Master>> response) {
+                ctmCall.Succeed(response);
+            }
+
+            @Override
+            public void onFailure(Call<List<DonHang_Master>> call, Throwable t) {
+                ctmCall.Fail(t);
+            }
+        });
+    }
+
+    public void getOrderListByPostMan(int page, String usncode, String status) {
+        service.getListByPostMan(page, usncode, status).enqueue(new Callback<List<DonHang_Master>>() {
+            @Override
+            public void onResponse(Call<List<DonHang_Master>> call, Response<List<DonHang_Master>> response) {
+                ctmCall.Succeed(response);
+            }
+
+            @Override
+            public void onFailure(Call<List<DonHang_Master>> call, Throwable t) {
+                ctmCall.Fail(t);
+            }
+        });
+    }
+
+    public void saveOrder(DonHang_Master dh) {
+        service.saveOrder(dh).enqueue(new Callback<DonHang_Master>() {
+            @Override
+            public void onResponse(Call<DonHang_Master> call, Response<DonHang_Master> response) {
+                ctmCall.Succeed(response);
+            }
+
+            @Override
+            public void onFailure(Call<DonHang_Master> call, Throwable t) {
+                ctmCall.Fail(t);
+            }
+        });
+    }
+
+    public void updateOrder(DonHang_Master dh) {
+        service.updateOrder(dh).enqueue(new Callback<SucceedUpdate>() {
+            @Override
+            public void onResponse(Call<SucceedUpdate> call, Response<SucceedUpdate> response) {
+                ctmCall.Succeed(response);
+            }
+
+            @Override
+            public void onFailure(Call<SucceedUpdate> call, Throwable t) {
+                ctmCall.Fail(t);
+            }
+        });
+    }
+
+    public void updateOrderDetail(List<DonHang_Detail> dh) {
+        service.updateOrderDetail(dh).enqueue(new Callback<SucceedUpdate>() {
+            @Override
+            public void onResponse(Call<SucceedUpdate> call, Response<SucceedUpdate> response) {
+                ctmCall.Succeed(response);
+            }
+
+            @Override
+            public void onFailure(Call<SucceedUpdate> call, Throwable t) {
+                ctmCall.Fail(t);
+            }
+        });
+    }
+
+    //products
+    public void getProductList() {
+        service.getProductList().enqueue(new Callback<List<SanPham>>() {
+            @Override
+            public void onResponse(Call<List<SanPham>> call, Response<List<SanPham>> response) {
+                ctmCall.Succeed(response);
+            }
+
+            @Override
+            public void onFailure(Call<List<SanPham>> call, Throwable t) {
+                ctmCall.Fail(t);
+            }
+        });
+    }
+
+    public void getProductById(String id) {
+        service.getProductById(id).enqueue(new Callback<SanPham>() {
+            @Override
+            public void onResponse(Call<SanPham> call, Response<SanPham> response) {
+                ctmCall.Succeed(response);
+            }
+
+            @Override
+            public void onFailure(Call<SanPham> call, Throwable t) {
+                ctmCall.Fail(t);
+            }
+        });
+    }
+
+    public void updateProduct(SanPham sp) {
+        service.updateProduct(sp).enqueue(new Callback<SucceedUpdate>() {
+            @Override
+            public void onResponse(Call<SucceedUpdate> call, Response<SucceedUpdate> response) {
+                ctmCall.Succeed(response);
+            }
+
+            @Override
+            public void onFailure(Call<SucceedUpdate> call, Throwable t) {
+                ctmCall.Fail(t);
+            }
+        });
+    }
+
+    public void saveProduct(SanPham sp) {
+        service.saveProduct(sp).enqueue(new Callback<SanPham>() {
+            @Override
+            public void onResponse(Call<SanPham> call, Response<SanPham> response) {
+                ctmCall.Succeed(response);
+            }
+
+            @Override
+            public void onFailure(Call<SanPham> call, Throwable t) {
+                ctmCall.Fail(t);
+            }
+        });
+    }
+
+    public void getDetailsDH(String idDonhang) {
+        service.getOrderDetail(idDonhang).enqueue(new Callback<List<DonHang_Detail>>() {
+            @Override
+            public void onResponse(Call<List<DonHang_Detail>> call, Response<List<DonHang_Detail>> response) {
+                ctmCall.Succeed(response);
+            }
+
+            @Override
+            public void onFailure(Call<List<DonHang_Detail>> call, Throwable t) {
+                ctmCall.Fail(t);
+            }
+        });
+    }
+
+    ////
+
+    public interface CallListCustomer extends CallBack {
+    }
+
+    public interface CallListOrder extends CallBack {
+    }
+
+    public interface CallDetailOrder extends CallBack {
+    }
+
+}

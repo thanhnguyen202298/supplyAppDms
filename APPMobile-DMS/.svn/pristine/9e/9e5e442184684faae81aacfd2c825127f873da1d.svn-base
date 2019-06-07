@@ -1,0 +1,154 @@
+package com.sskey.dms.model;
+
+public class DonHang_Detail {
+
+    public String donHangChiTiet1;
+    public String maDonHang;
+    public String maSanPham;
+    public String tenSanPham;
+    public double soLuong;
+    public double donGia;
+    public double thanhTien;
+    public double chietKhauPercent;
+    public double giamTienMat;
+    public String mau;
+
+    public String getMau() {
+        return mau;
+    }
+
+    public void setMau(String mau) {
+        this.mau = mau;
+    }
+
+    public String getTenSanPham() {
+        return tenSanPham;
+    }
+
+    public void setTenSanPham(String tenSanPham) {
+        this.tenSanPham = tenSanPham;
+    }
+
+    public DonHang_Detail() {
+    }
+
+    public String getDonHangChiTiet1() {
+        return donHangChiTiet1;
+    }
+
+    public void setDonHangChiTiet1(String donHangChiTiet1) {
+        this.donHangChiTiet1 = donHangChiTiet1;
+    }
+
+    public String getMaDonHang() {
+        return maDonHang;
+    }
+
+    public void setMaDonHang(String maDonHang) {
+        this.maDonHang = maDonHang;
+    }
+
+    public String getMaSanPham() {
+        return maSanPham;
+    }
+
+    public void setMaSanPham(String maSanPham) {
+        this.maSanPham = maSanPham;
+    }
+
+    public double getSoLuong() {
+        return soLuong;
+    }
+
+    public void setSoLuong(double soLuong) {
+        this.soLuong = soLuong;
+    }
+
+    public double getDonGia() {
+        return donGia;
+    }
+
+    public void setDonGia(double donGia) {
+        this.donGia = donGia;
+    }
+
+    public double getThanhTien() {
+        return thanhTien;
+    }
+
+    public void setThanhTien(double thanhTien) {
+        this.thanhTien = thanhTien;
+    }
+
+    public double getChietKhauPercent() {
+        return chietKhauPercent;
+    }
+
+    public void setChietKhauPercent(double chietKhauPercent) {
+        this.chietKhauPercent = chietKhauPercent;
+    }
+
+    public double getGiamTienMat() {
+        return giamTienMat;
+    }
+
+    public void setGiamTienMat(double giamTienMat) {
+        this.giamTienMat = giamTienMat;
+    }
+//    public DonHang_Detail(String donHang_Detail_ID, String maDoHangID, String maSanPhamID, double soLuong, double donGia, double thanhTien) {
+//        DonHang_Detail_ID = donHang_Detail_ID;
+//        MaDoHangID = maDoHangID;
+//        MaSanPhamID = maSanPhamID;
+//        SoLuong = soLuong;
+//        DonGia = donGia;
+//        ThanhTien = thanhTien;
+//    }
+//
+//    public String getDonHang_Detail_ID() {
+//        return DonHang_Detail_ID;
+//    }
+//
+//    public void setDonHang_Detail_ID(String donHang_Detail_ID) {
+//        DonHang_Detail_ID = donHang_Detail_ID;
+//    }
+//
+//    public String getMaDoHangID() {
+//        return MaDoHangID;
+//    }
+//
+//    public void setMaDoHangID(String maDoHangID) {
+//        MaDoHangID = maDoHangID;
+//    }
+//
+//    public String getMaSanPhamID() {
+//        return MaSanPhamID;
+//    }
+//
+//    public void setMaSanPhamID(String maSanPhamID) {
+//        MaSanPhamID = maSanPhamID;
+//    }
+//
+//    public double getSoLuong() {
+//        return SoLuong;
+//    }
+//
+//    public void setSoLuong(double soLuong) {
+//        SoLuong = soLuong;
+//    }
+//
+//    public double getDonGia() {
+//        return DonGia;
+//    }
+//
+//    public void setDonGia(double donGia) {
+//        DonGia = donGia;
+//    }
+//
+//    public double getThanhTien() {
+//        return ThanhTien;
+//    }
+//
+//    public void setThanhTien(double thanhTien) {
+//        ThanhTien = thanhTien;
+//    }
+}

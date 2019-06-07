@@ -1,0 +1,130 @@
+package com.sskey.dms.data.remote;
+
+import com.sskey.dms.model.DonHang_Detail;
+import com.sskey.dms.model.DonHang_Master;
+import com.sskey.dms.model.Customer;
+import com.sskey.dms.model.SanPham;
+import com.sskey.dms.model.StatusOrder;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Query;
+
+public interface SOService {
+
+    //Get
+
+    //Customer
+    @GET("/customer/getlist")
+    Call<List<Customer>> getCustomerList(@Query("page") int page);
+
+    @GET("/customer/getListOwner")
+    Call<List<Customer>> getCustomerBySale(@Query("page") int page, @Query("saleid") String saleid);
+
+    @GET("/customer/getItemById")
+    Call<Customer> getCustomerById(@Query("id") String id);
+
+    @POST("/customer/save")
+    @FormUrlEncoded
+    Call<Customer> saveCustomer(@Body Customer customer);
+
+    @PUT("/customer/update")
+    Call<SucceedUpdate> updateCustomer(@Body Customer kh);
+
+
+    //Employee
+    @GET("/Employee/getlist")
+    Call<List<Customer>> getEmployeeList(@Query("page") int page);
+
+    @POST("/Employee/save")
+    @FormUrlEncoded
+    Call<Customer> saveEmployee(@Body Customer customer);
+
+    @PUT("/Employee/update")
+    Call<SucceedUpdate> updateEmployee(@Body Customer kh);
+
+    @POST("/UsInfo/login")
+    @FormUrlEncoded
+    Call<Customer> login(@Field("usn") String sdt, @Field("pwd") String pas);
+
+    //Order
+    @POST("/donhang/savedh")
+    Call<DonHang_Master> saveOrder(@Body DonHang_Master dhangMaster);
+
+    @GET("/donhang/getlist")
+    Call<List<DonHang_Master>> getOrderList(@Query("page") int page);
+
+    @GET("/donhang/getstatuslist")
+    Call<List<StatusOrder>> getStatusList();
+
+    @GET("/donhang/getlistbyuser")
+    Call<List<DonHang_Master>> getListByUser(@Query("page") int page, @Query("usn") String usncode, @Query("status") String status);
+
+    //get lisst by shop
+    @GET("/donhang/getListByShop")
+    Call<List<DonHang_Master>> getListByShop(@Query("page") int page, @Query("shop") String usncode, @Query("status") String status);
+
+    //get lisst by shop
+    @GET("/donhang/getListByPostMan")
+    Call<List<DonHang_Master>> getListByPostMan(@Query("page") int page, @Query("postman") String postman, @Query("status") String status);
+
+    // Filter fBy Notify Order
+    //
+    //
+
+    @GET("/donhang/getNotifyByShop")
+    Call<List<DonHang_Master>> getNotifyByShop(@Query("shop") String usncode);
+
+    @GET("/donhang/getNotifyByUser")
+    Call<List<DonHang_Master>> getNotifyByUser(@Query("usn") String usncode);
+
+    //
+    @GET("/donhang/getNotifyByPostMan")
+    Call<List<DonHang_Master>> getNotifyByPostMan(@Query("postman") String postman);
+
+    //
+    //
+    //End Filter Notify Order
+
+    @GET("/donhang/getdh/{id}")
+    Call<DonHang_Master> getOrderById(@Query("id") String OrderCode);
+
+    @PUT("/donhang/updatedh")
+    Call<SucceedUpdate> updateOrder(@Body DonHang_Master dhMaster);
+
+    @PUT("/donhang/updateChitietDh")
+    Call<SucceedUpdate> updateOrderDetail(@Body List<DonHang_Detail> Listdetails);
+
+    @GET("/donhang/getdetailsdh/")
+    Call<List<DonHang_Detail>> getOrderDetail(@Query("id") String idDonhang);
+
+
+    //processing
+    @GET("/sanpham/getlist")
+    Call<List<SanPham>> getProductList();
+
+    //get By Id
+
+
+    @GET("/sanpham/getsp/")
+    Call<SanPham> getProductById(@Query("id") String ProductCode);
+
+
+    //Products
+
+    @POST("/SanPham/savesp")
+    @FormUrlEncoded
+    Call<SanPham> saveProduct(@Body SanPham sanPham);
+
+    @PUT("/sanpham/updatesp")
+    @FormUrlEncoded
+    Call<SucceedUpdate> updateProduct(@Body SanPham sanPham);
+
+}

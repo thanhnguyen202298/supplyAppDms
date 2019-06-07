@@ -1,0 +1,60 @@
+package com.sskey.dms.model;
+
+public class BalanceSum {
+    private String ID;
+    private String SaleDate;
+    private String SaleMan;
+    private double TotalBallance;
+    private double InputDailyAmount;
+
+    public BalanceSum() {
+    }
+
+    public BalanceSum(String ID, String saleDate, String saleMan, double totalBallance, double inputDailyAmount) {
+        this.ID = ID;
+        SaleDate = saleDate;
+        SaleMan = saleMan;
+        TotalBallance = totalBallance;
+        InputDailyAmount = inputDailyAmount;
+    }
+
+    public String getID() {
+        return ID;
+    }
+
+    public void setID(String ID) {
+        this.ID = ID;
+    }
+
+    public String getSaleDate() {
+        return SaleDate;
+    }
+
+    public void setSaleDate(String saleDate) {
+        SaleDate = saleDate;
+    }
+
+    public String getSaleMan() {
+        return SaleMan;
+    }
+
+    public void setSaleMan(String saleMan) {
+        SaleMan = saleMan;
+    }
+
+    public double getTotalBallance() {
+        return TotalBallance;
+    }
+
+    public void setTotalBallance(double totalBallance) {
+        TotalBallance = totalBallance;
+    }
+
+    public double getInputDailyAmount() {
+        return InputDailyAmount;
+    }
+
+    public void setInputDailyAmount(double inputDailyAmount) {
+        InputDailyAmount = inputDailyAmount;
+    }
+}

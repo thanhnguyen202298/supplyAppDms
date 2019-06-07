@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:paddingBottom="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp">
+
+    <ImageView android:src="@drawable/logo"
+    android:layout_width="wrap_content"
+    android:layout_height="72dp"
+    android:layout_marginBottom="15dp"
+    android:layout_gravity="center_horizontal" />
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:layout_marginBottom="15dp"
+        android:text="Một tin nhắn SMS có mã xác thực đã được gửi tới số điện thoại đăng ký của bạn. "/>
+
+    <TextView
+        android:id="@+id/sdt_Khach"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:layout_marginBottom="15dp"
+        android:textStyle="bold"
+        android:text="0869217931"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:layout_marginBottom="15dp"
+        android:textSize="15sp"
+        android:text="NHẬP MÃ"/>
+
+    <com.goodiebag.pinview.Pinview
+        android:id="@+id/pv_NhapMa"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cursorVisible="false"
+        app:hint=""
+        app:inputType="number"
+        app:forceKeyboard="true"
+        android:backgroundTint="@color/black"
+        app:password="false"
+        app:pinBackground="@drawable/example_drawable_with_grey_disabled"
+        app:pinHeight="40dp"
+        app:pinLength="4"
+        app:pinWidth="40dp" />
+
+    <TextView
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="Đây là mật khẩu hệ thống cung cấp cho bạn! Vui lòng ghi nhớ!"
+        android:textColor="@color/primary_dark"/>
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btn_nhapMa"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="@color/orange"
+        android:textColor="@color/white"
+        android:padding="12dp"
+        android:textStyle="bold"
+        android:text="Nhập mã" />
+
+</LinearLayout>

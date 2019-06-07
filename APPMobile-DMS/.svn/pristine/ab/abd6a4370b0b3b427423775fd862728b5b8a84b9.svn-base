@@ -1,0 +1,86 @@
+package com.example.sskey.dms.OrderDetail;
+
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.example.sskey.dms.R;
+import com.example.sskey.dms.Utils.UtilBasic;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class DetailRCview extends RecyclerView.Adapter<DetailRCview.DonDetailVH> {
+
+    private List<DonHang_Detail> myDetails;
+    private Context ctx;
+    private int tmp;
+
+    public DetailRCview(Context context){
+        myDetails = new ArrayList<>();
+        ctx = context;
+    }
+
+    @NonNull
+    @Override
+    public DonDetailVH onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        LayoutInflater lay = LayoutInflater.from(viewGroup.getContext());
+        View  v = lay.inflate(R.layout.item_donhang_chitiet,viewGroup,false);
+        DonDetailVH vh = new DonDetailVH(v);
+        return vh;
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull DonDetailVH donDetailVH, int i) {
+
+        donDetailVH.txtTenSanPham.setText(myDetails.get(i).tenSanPham);
+        donDetailVH.txtSoLuong.setText(UtilBasic.getNumberFormat().format(myDetails.get(i).soLuong));
+        donDetailVH.txtDonGia.setText(UtilBasic.getNumberFormat().format(myDetails.get(i).donGia));
+        donDetailVH.txtThanhTien.setText(UtilBasic.getNumberFormat().format(myDetails.get(i).thanhTien));
+        tmp = UtilBasic.getImageName(myDetails.get(i).getMau(),ctx);
+
+        if(tmp>0)
+            donDetailVH.imageSanPham.setImageResource(tmp);
+    }
+
+    @Override
+    public int getItemCount() {
+        return myDetails.size();
+    }
+
+    public void update(List<DonHang_Detail> details){
+        myDetails.addAll(details);
+        notifyDataSetChanged();
+    }
+    public void clear(){
+        myDetails.clear();
+    }
+    public List<DonHang_Detail> getList(){
+        return myDetails;
+    }
+
+
+    public class DonDetailVH extends RecyclerView.ViewHolder{
+
+        public TextView txtTenSanPham;
+        public TextView txtSoLuong;
+        public TextView txtDonGia;
+        public TextView txtThanhTien;
+        public AppCompatImageView imageSanPham;
+
+        public DonDetailVH(View view){
+            super(view);
+
+            txtTenSanPham = view.findViewById(R.id.txtTenSanPham);
+            txtSoLuong = view.findViewById(R.id.txtSoLuong);
+            txtDonGia = view.findViewById(R.id.txtDonGia);
+            txtThanhTien = view.findViewById(R.id.txtThanhTien);
+            imageSanPham = view.findViewById(R.id.imageSanPham);
+        }
+    }
+}

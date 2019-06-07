@@ -1,0 +1,191 @@
+package com.example.sskey.dms;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.sskey.dms.Order.OrderDetailActivity;
+import com.example.sskey.dms.R;
+import com.example.sskey.dms.Utils.UtilBasic;
+import com.sskey.dms.adapter.SanPhamRecycleAdapter;
+import com.sskey.dms.data.remote.APIUtils;
+import com.sskey.dms.data.remote.SOService;
+import com.sskey.dms.model.DonHang_Detail;
+import com.sskey.dms.model.DonHang_Master;
+import com.sskey.dms.model.NguoiDung;
+import com.sskey.dms.model.SanPham;
+import com.sskey.dms.utils.Constants;
+import com.sskey.dms.utils.UpdateBadgeCart;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class SanPhamActivity extends AppCompatActivity implements UpdateBadgeCart {
+
+    List<SanPham> sanPhamList;
+    SOService mService;
+    RecyclerView recyclerViewSP;
+    FloatingActionButton flabCart;
+    SanPhamRecycleAdapter recycleAdapter;
+    TextView mBadge;
+
+    DonHang_Detail detail;
+    DonHang_Master master;
+    HashMap<Integer, DonHang_Detail> lstDHDT;
+    List<NguoiDung> mylys;
+    int position = 0;
+    private ActionBar toolbar;
+    private int count = 0;
+
+    UpdateBadgeCart updateBadgeCart = this;
+
+    public UpdateBadgeCart getUpdateBadgeCart() {
+        return updateBadgeCart;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_danhsach_sanpham);
+
+        //Badge
+        mBadge = (TextView) findViewById(R.id.badge);
+        mBadge.setVisibility(View.GONE);
+
+        //No action bar
+        toolbar = getSupportActionBar();
+        toolbar.hide();
+
+        //init data
+        sanPhamList = new ArrayList<>();
+        detail = new DonHang_Detail();
+        master = new DonHang_Master();
+        lstDHDT = new HashMap<>();
+
+        //init view
+        flabCart = (FloatingActionButton) findViewById(R.id.fabCart);
+        mService = APIUtils.getSOService();
+        recyclerViewSP = (RecyclerView) findViewById(R.id.rv_sanpham);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerViewSP.setLayoutManager(layoutManager);
+        recycleAdapter = new SanPhamRecycleAdapter(getApplicationContext(), sanPhamList, updateBadgeCart);
+        recyclerViewSP.setAdapter(recycleAdapter);
+        recyclerViewSP.setHasFixedSize(true);
+
+        loadSanPham();
+
+        loadDshop();
+
+        flabCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    setDonHangChiTiets(recycleAdapter.getCart());
+                    if (!master.donHangChiTiets.isEmpty()) {
+                        NguoiDung user = UtilBasic.getUser(SanPhamActivity.this);
+                        master.diaChiGiao = user.DiaChi;
+                        if (mylys.size() > 0) {
+                            master.shopId = mylys.get(0).MaNguoiDung;
+                            master.shopName = mylys.get(0).TenNguoiDung;
+                            master.shopPhone = mylys.get(0).SoDienThoai;
+                        } else {
+                            master.shopId = "-1";
+                            master.shopName = "Thành Gas";
+                            master.shopPhone = "0123456789";
+                        }
+                        String obj = UtilBasic.ObjectToJson(master);
+                        Intent cartIntent = new Intent(SanPhamActivity.this, OrderDetailActivity.class);
+                        cartIntent.putExtra(Constants.OrderObj, obj);
+                        cartIntent.putExtra(Constants.OrderRequest, Constants.NewOrder);
+                        startActivity(cartIntent);
+                    } else {
+
+                        Toast.makeText(SanPhamActivity.this, "Chưa có sản phẩm", Toast.LENGTH_SHORT).show();
+                    }
+
+                } catch (Exception e) {
+                    Toast.makeText(SanPhamActivity.this, e.getMessage() + "debug", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+    }
+
+    private void loadDshop() {
+        mylys = new ArrayList<>();
+        mService.getCustomerByType("0").enqueue(new Callback<List<NguoiDung>>() {
+            @Override
+            public void onResponse(Call<List<NguoiDung>> call, Response<List<NguoiDung>> response) {
+                mylys = response.body();
+                position++;
+            }
+
+            @Override
+            public void onFailure(Call<List<NguoiDung>> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void setDonHangChiTiets(HashMap<Integer, DonHang_Detail> lstDHDT) {
+        {
+            master.donHangChiTiets = new ArrayList<>();
+            for (Integer i : lstDHDT.keySet()) {
+                master.donHangChiTiets.add(lstDHDT.get(i));
+            }
+        }
+    }
+
+    //load product for api
+    private void loadSanPham() {
+        mService.getProductList().enqueue(new Callback<List<SanPham>>() {
+            @Override
+            public void onResponse(Call<List<SanPham>> call, Response<List<SanPham>> response) {
+
+                //check response
+                if (response.isSuccessful()) {
+//                    sanPhamList = response.body();
+                    recycleAdapter.updateSanPham(response.body());
+
+//                    adapter.notifyDataStateChanged()
+                    Log.d("SanPhamActivity", "posts loaded from API " + sanPhamList.toString());
+
+                } else {
+                    Log.e("SanPhamActivity", "API not ok");
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<SanPham>> call, Throwable t) {
+
+                Toast.makeText(SanPhamActivity.this, "Không kết nối được với server, Vui lòng kiểm tra lại", Toast.LENGTH_SHORT).show();
+
+                Log.d("SanPhamActivity", "error loading from API: " + t.toString());
+            }
+        });
+    }
+
+    @Override
+    public void updateBadge(int number) {
+//        Toast.makeText(this,number+"",Toast.LENGTH_LONG).show();
+        if (number > 0) {
+            mBadge.setText(number + "");
+            mBadge.setVisibility(View.VISIBLE);
+        } else
+            mBadge.setVisibility(View.GONE);
+    }
+}

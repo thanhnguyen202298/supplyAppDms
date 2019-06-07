@@ -1,0 +1,216 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="SupplychainModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="SupplychainEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="BallanceSums" EntityType="SupplychainModel.BallanceSum" />
+    <EntitySet Name="Customers" EntityType="SupplychainModel.Customer" />
+    <EntitySet Name="Employees" EntityType="SupplychainModel.Employee" />
+    <EntitySet Name="Inventories" EntityType="SupplychainModel.Inventory" />
+    <EntitySet Name="PriceLists" EntityType="SupplychainModel.PriceList" />
+    <EntitySet Name="SaleLines" EntityType="SupplychainModel.SaleLine" />
+    <EntitySet Name="SaleOrders" EntityType="SupplychainModel.SaleOrder" />
+    <EntitySet Name="UserInfoes" EntityType="SupplychainModel.UserInfo" />
+    <AssociationSet Name="FK_SaleOrder_Customer" Association="SupplychainModel.FK_SaleOrder_Customer">
+      <End Role="Customer" EntitySet="Customers" />
+      <End Role="SaleOrder" EntitySet="SaleOrders" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SaleOrder_Employee" Association="SupplychainModel.FK_SaleOrder_Employee">
+      <End Role="Employee" EntitySet="Employees" />
+      <End Role="SaleOrder" EntitySet="SaleOrders" />
+    </AssociationSet>
+    <AssociationSet Name="FK_UserInfo_Employee" Association="SupplychainModel.FK_UserInfo_Employee">
+      <End Role="Employee" EntitySet="Employees" />
+      <End Role="UserInfo" EntitySet="UserInfoes" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PriceList_Inventory" Association="SupplychainModel.FK_PriceList_Inventory">
+      <End Role="Inventory" EntitySet="Inventories" />
+      <End Role="PriceList" EntitySet="PriceLists" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SaleLine_Inventory" Association="SupplychainModel.FK_SaleLine_Inventory">
+      <End Role="Inventory" EntitySet="Inventories" />
+      <End Role="SaleLine" EntitySet="SaleLines" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SaleLine_SaleOrder" Association="SupplychainModel.FK_SaleLine_SaleOrder">
+      <End Role="SaleOrder" EntitySet="SaleOrders" />
+      <End Role="SaleLine" EntitySet="SaleLines" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="BallanceSum">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Guid" Nullable="false" />
+    <Property Name="SaleDate" Type="DateTime" Precision="3" />
+    <Property Name="SaleMan" Type="Guid" />
+    <Property Name="TotalBallance" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="InputDailyAmount" Type="Decimal" Precision="18" Scale="0" />
+  </EntityType>
+  <EntityType Name="Customer">
+    <Key>
+      <PropertyRef Name="CustAccount" />
+    </Key>
+    <Property Name="CustAccount" Type="Guid" Nullable="false" />
+    <Property Name="CustGroup" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CustName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Address" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="Tell" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+    <Property Name="SaleMan" Type="Guid" />
+    <NavigationProperty Name="SaleOrders" Relationship="SupplychainModel.FK_SaleOrder_Customer" FromRole="Customer" ToRole="SaleOrder" />
+  </EntityType>
+  <EntityType Name="Employee">
+    <Key>
+      <PropertyRef Name="EmployeeId" />
+    </Key>
+    <Property Name="EmployeeId" Type="Guid" Nullable="false" />
+    <Property Name="EmployeeName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Address" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="Tell" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+    <Property Name="VehicleDefault" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="SaleOrders" Relationship="SupplychainModel.FK_SaleOrder_Employee" FromRole="Employee" ToRole="SaleOrder" />
+    <NavigationProperty Name="UserInfoes" Relationship="SupplychainModel.FK_UserInfo_Employee" FromRole="Employee" ToRole="UserInfo" />
+  </EntityType>
+  <EntityType Name="Inventory">
+    <Key>
+      <PropertyRef Name="ItemID" />
+    </Key>
+    <Property Name="ItemID" Type="Guid" Nullable="false" />
+    <Property Name="ItemName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Color" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Volume" Type="Int32" />
+    <Property Name="Onhand" Type="Int32" />
+    <Property Name="Image" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="PriceLists" Relationship="SupplychainModel.FK_PriceList_Inventory" FromRole="Inventory" ToRole="PriceList" />
+    <NavigationProperty Name="SaleLines" Relationship="SupplychainModel.FK_SaleLine_Inventory" FromRole="Inventory" ToRole="SaleLine" />
+  </EntityType>
+  <EntityType Name="PriceList">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Guid" Nullable="false" />
+    <Property Name="TabGroupAll" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Code" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ItemID" Type="Guid" />
+    <Property Name="UnitPrice" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="FromDate" Type="DateTime" Precision="3" />
+    <Property Name="ToDate" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Inventory" Relationship="SupplychainModel.FK_PriceList_Inventory" FromRole="PriceList" ToRole="Inventory" />
+  </EntityType>
+  <EntityType Name="SaleLine">
+    <Key>
+      <PropertyRef Name="LotID" />
+    </Key>
+    <Property Name="LotID" Type="Guid" Nullable="false" />
+    <Property Name="SaleID" Type="Guid" />
+    <Property Name="LineNum" Type="Guid" Nullable="false" />
+    <Property Name="ItemID" Type="Guid" />
+    <Property Name="Quantity" Type="Int32" />
+    <Property Name="SalePrice" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="LineAmount" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="ItemName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ItemColor" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Inventory" Relationship="SupplychainModel.FK_SaleLine_Inventory" FromRole="SaleLine" ToRole="Inventory" />
+    <NavigationProperty Name="SaleOrder" Relationship="SupplychainModel.FK_SaleLine_SaleOrder" FromRole="SaleLine" ToRole="SaleOrder" />
+  </EntityType>
+  <EntityType Name="SaleOrder">
+    <Key>
+      <PropertyRef Name="SaleID" />
+    </Key>
+    <Property Name="SaleID" Type="Guid" Nullable="false" />
+    <Property Name="CustAccount" Type="Guid" />
+    <Property Name="SalesMan" Type="Guid" />
+    <Property Name="CreateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="SaleStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ShipTo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Amount" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="DeliTime" Type="DateTime" Precision="3" />
+    <Property Name="LotId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ShopName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ShopPhone" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Customer" Relationship="SupplychainModel.FK_SaleOrder_Customer" FromRole="SaleOrder" ToRole="Customer" />
+    <NavigationProperty Name="Employee" Relationship="SupplychainModel.FK_SaleOrder_Employee" FromRole="SaleOrder" ToRole="Employee" />
+    <NavigationProperty Name="SaleLines" Relationship="SupplychainModel.FK_SaleLine_SaleOrder" FromRole="SaleOrder" ToRole="SaleLine" />
+  </EntityType>
+  <EntityType Name="UserInfo">
+    <Key>
+      <PropertyRef Name="UserID" />
+    </Key>
+    <Property Name="UserID" Type="Guid" Nullable="false" />
+    <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="PassWord" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="EmployeeId" Type="Guid" />
+    <Property Name="Role" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Employee" Relationship="SupplychainModel.FK_UserInfo_Employee" FromRole="UserInfo" ToRole="Employee" />
+  </EntityType>
+  <Association Name="FK_SaleOrder_Customer">
+    <End Type="SupplychainModel.Customer" Role="Customer" Multiplicity="0..1" />
+    <End Type="SupplychainModel.SaleOrder" Role="SaleOrder" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customer">
+        <PropertyRef Name="CustAccount" />
+      </Principal>
+      <Dependent Role="SaleOrder">
+        <PropertyRef Name="CustAccount" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SaleOrder_Employee">
+    <End Type="SupplychainModel.Employee" Role="Employee" Multiplicity="0..1" />
+    <End Type="SupplychainModel.SaleOrder" Role="SaleOrder" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Employee">
+        <PropertyRef Name="EmployeeId" />
+      </Principal>
+      <Dependent Role="SaleOrder">
+        <PropertyRef Name="SalesMan" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_UserInfo_Employee">
+    <End Type="SupplychainModel.Employee" Role="Employee" Multiplicity="0..1" />
+    <End Type="SupplychainModel.UserInfo" Role="UserInfo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Employee">
+        <PropertyRef Name="EmployeeId" />
+      </Principal>
+      <Dependent Role="UserInfo">
+        <PropertyRef Name="EmployeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PriceList_Inventory">
+    <End Type="SupplychainModel.Inventory" Role="Inventory" Multiplicity="0..1" />
+    <End Type="SupplychainModel.PriceList" Role="PriceList" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Inventory">
+        <PropertyRef Name="ItemID" />
+      </Principal>
+      <Dependent Role="PriceList">
+        <PropertyRef Name="ItemID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SaleLine_Inventory">
+    <End Type="SupplychainModel.Inventory" Role="Inventory" Multiplicity="0..1" />
+    <End Type="SupplychainModel.SaleLine" Role="SaleLine" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Inventory">
+        <PropertyRef Name="ItemID" />
+      </Principal>
+      <Dependent Role="SaleLine">
+        <PropertyRef Name="ItemID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SaleLine_SaleOrder">
+    <End Type="SupplychainModel.SaleOrder" Role="SaleOrder" Multiplicity="0..1" />
+    <End Type="SupplychainModel.SaleLine" Role="SaleLine" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SaleOrder">
+        <PropertyRef Name="SaleID" />
+      </Principal>
+      <Dependent Role="SaleLine">
+        <PropertyRef Name="SaleID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

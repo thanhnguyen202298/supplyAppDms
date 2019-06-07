@@ -1,0 +1,91 @@
+package com.example.sskey.dms.CustomerFragment;
+
+import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+
+import com.example.sskey.dms.R;
+import com.sskey.dms.model.Customer;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.zip.Inflater;
+
+public class CustomerRCadapter extends RecyclerView.Adapter<CustomerRCadapter.ViewCustomerHolder> {
+
+    private List<Customer> customers;
+
+    public CustomerRCadapter(){
+        customers = new ArrayList<>();
+    }
+
+    @NonNull
+    @Override
+    public ViewCustomerHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        LayoutInflater lin = LayoutInflater.from(viewGroup.getContext());
+        View v = lin.inflate(R.layout.item_customer, viewGroup, false);
+        ViewCustomerHolder vh = new ViewCustomerHolder(v);
+
+        return vh;
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull final ViewCustomerHolder viewCustomerHolder, final int i) {
+        viewCustomerHolder.custName.setText(customers.get(i).CustName);
+        viewCustomerHolder.custAddres.setText(customers.get(i).Address);
+        viewCustomerHolder.custTel.setText(customers.get(i).Tell);
+        viewCustomerHolder.mylay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                customers.get(i).evt_click = !customers.get(i).evt_click;
+                setShowBtn(customers.get(i).evt_click, viewCustomerHolder.OrderView);
+                setShowBtn(customers.get(i).evt_click, viewCustomerHolder.SaleStart);
+            }
+        });
+
+    }
+
+    private void setShowBtn(boolean showBtn, View view) {
+        if (showBtn) view.setVisibility(View.VISIBLE);
+        else view.setVisibility(View.GONE);
+    }
+
+    @Override
+    public int getItemCount() {
+        return customers.size();
+    }
+
+    public void cleaer(){
+        customers.clear();
+    }
+
+    public void update(List<Customer> customerList) {
+        customers.addAll(customerList);
+        notifyDataSetChanged();
+    }
+
+    public class ViewCustomerHolder extends RecyclerView.ViewHolder {
+        public TextView custName;
+        public TextView custAddres;
+        public TextView custTel;
+        public Button SaleStart;
+        public Button OrderView;
+        public ConstraintLayout mylay;
+
+        public ViewCustomerHolder(View v) {
+            super(v);
+            custName = v.findViewById(R.id.cust_name);
+            custAddres = v.findViewById(R.id.cust_address);
+            custTel = v.findViewById(R.id.cust_tell);
+
+            SaleStart = v.findViewById(R.id.btnSale);
+            OrderView = v.findViewById(R.id.btnViewOrder);
+            mylay = v.findViewById(R.id.mylayout);
+        }
+    }
+}

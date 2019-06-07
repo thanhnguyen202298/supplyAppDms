@@ -1,0 +1,174 @@
+package com.example.sskey.dms;
+
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.sskey.dms.Utils.UtilBasic;
+import com.sskey.dms.data.remote.APIUtils;
+import com.sskey.dms.data.remote.SOService;
+import com.sskey.dms.model.Customer;
+import com.sskey.dms.utils.PreferenceUtils;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class SignUpActivity extends AppCompatActivity {
+
+    private static final String TAG = "SignupActivity";
+
+    EditText _userNameText;
+    EditText _phoneText;
+    Button _signUpButton;
+    TextView _loginLink;
+
+    Customer nguoiDung;
+
+    SOService mService;
+
+    Context context;
+
+    EditText _passwordConfirmText;
+    EditText _passwordText;
+
+    @SuppressLint("WrongViewCast")
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_sign_up);
+
+        //init API service
+        mService = APIUtils.getSOService();
+        nguoiDung = new Customer();
+
+        //init view
+        _userNameText = (EditText) findViewById(R.id.input_userName);
+//        _passwordConfirmText = (EditText) findViewById(R.id.input_passwordConfirm);
+//        _passwordText = (EditText) findViewById(R.id.input_password);
+        _phoneText = (EditText) findViewById(R.id.input_phoneNumber);
+        _signUpButton = (Button) findViewById(R.id.btn_signup);
+        _loginLink = (TextView) findViewById(R.id.link_login);
+
+        _signUpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signUp();
+            }
+        });
+
+        _loginLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                finish();
+            }
+        });
+    }
+
+    private void signUp() {
+
+        Log.d(TAG, "SignUp");
+
+        if (!validate()) {
+            onSignUpFailed();
+            return;
+        }
+
+        _signUpButton.setEnabled(false);
+        final ProgressDialog progressDialog = new ProgressDialog(SignUpActivity.this, R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Vui lòng đợi....");
+        progressDialog.show();
+
+        final String tenNguoiDung = _userNameText.getText().toString();
+
+        final String soDienThoai = _phoneText.getText().toString();
+        Customer customer = new Customer();
+
+        // call API
+        mService.saveCustomer(customer).enqueue(new Callback<Customer>() {
+
+            @Override
+            public void onResponse(Call<Customer> call, Response<Customer> response) {
+//                Toast.makeText(SignUpActivity.this, response.message(), Toast.LENGTH_SHORT).show();
+                nguoiDung = response.body();
+                progressDialog.cancel();
+                try {
+                    if (nguoiDung != null) {
+                        // save in Preference
+
+                        //save object pars json
+                        String obj = UtilBasic.ObjectToJson(nguoiDung);
+                        Intent accountsIntent = new Intent(SignUpActivity.this, PinViewActivity.class);
+//                        accountsIntent.putExtra("MATKHAU", matKhau);
+                        accountsIntent.putExtra("SDT", soDienThoai);
+                        accountsIntent.putExtra("NGUOIDUNG", obj);
+                        startActivity(accountsIntent);
+                    }
+
+                } catch (Exception e) {
+                    Toast.makeText(SignUpActivity.this, "Chưa đăng kí thành công", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Customer> call, Throwable t) {
+                progressDialog.cancel();
+                Toast.makeText(SignUpActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        new android.os.Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                onSignUpSuccess();
+//                progressDialog.show();
+            }
+        }, 1000);
+    }
+
+    private void onSignUpFailed() {
+        Toast.makeText(getBaseContext(), "Đăng ký không thành công", Toast.LENGTH_LONG).show();
+        _signUpButton.setEnabled(true);
+    }
+
+    private void onSignUpSuccess() {
+        _signUpButton.setEnabled(true);
+    }
+
+    //validate sign up
+    private boolean validate() {
+        boolean valid = true;
+
+        String tenNguoiDung = _userNameText.getText().toString();
+        String soDienThoai = _phoneText.getText().toString();
+
+        if (tenNguoiDung.isEmpty() || tenNguoiDung.length() < 3) {
+            _userNameText.setError("Tên phải lớn hơn 3 ký tự");
+            valid = false;
+        } else {
+            _userNameText.setError(null);
+        }
+        if (soDienThoai.isEmpty() || soDienThoai.length() < 10) {
+            _phoneText.setError("Số điện thoại phải lớn hơn 10 ký tự");
+            valid = false;
+        } else {
+            _phoneText.setError(null);
+        }
+
+        return valid;
+    }
+
+}
+

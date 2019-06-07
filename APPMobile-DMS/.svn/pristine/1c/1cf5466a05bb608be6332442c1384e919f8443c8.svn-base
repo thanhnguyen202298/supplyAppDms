@@ -1,0 +1,235 @@
+package com.example.sskey.dms.Order;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.sskey.dms.OrderDetail.DetailRCview;
+import com.example.sskey.dms.OrderDetail.StatusViewDialg;
+import com.example.sskey.dms.Utils.CommonStatus;
+import com.example.sskey.dms.Utils.UtilBasic;
+import com.example.sskey.dms.MainActivity;
+import com.example.sskey.dms.R;
+import com.sskey.dms.data.remote.APIUtils;
+import com.sskey.dms.data.remote.DataRemoteHelper;
+import com.sskey.dms.data.remote.SOService;
+import com.sskey.dms.model.BalanceSum;
+import com.sskey.dms.model.Customer;
+import com.sskey.dms.model.Order;
+import com.sskey.dms.model.SaleLine;
+import com.sskey.dms.model.UserInFoDTO;
+import com.sskey.dms.utils.Constants;
+import com.sskey.dms.utils.PreferenceUtils;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class OrderDetailActivity extends AppCompatActivity implements DataRemoteHelper.CallDetailOrder {
+
+    private TextView txtorderCode;
+    private CheckBox ChboxSpeed;
+    private TextView txtStatus;
+    private TextView txttimeGiao;
+    private TextView txtAddressgiao;
+    private TextView txtNameShop;
+    private TextView txtphoneShop;
+    private TextView btntxtOrder;
+    private ImageView enableEdt;
+
+    private RecyclerView rc;
+    private TextView txtSum;
+    private Order dh;
+    private DetailRCview adapter;
+    private DataRemoteHelper dbHelp;
+    private boolean newOr = false;
+    private UserInFoDTO user;
+    private Customer kh;
+    private SOService dservice;
+    private CommonStatus statOrd;
+    private TextView note;
+
+    private BalanceSum ballssum;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_donhang_master);
+
+        initial();
+        parseOrder();
+    }
+
+    private void initial() {
+        dservice = APIUtils.getSOService();
+        txtAddressgiao = findViewById(R.id.txtDiaChiGiaoHang);
+        txtNameShop = findViewById(R.id.txtshopaddress);
+        txtorderCode = findViewById(R.id.txt_MaDonHang);
+        txtphoneShop = findViewById(R.id.txtshopPhone);
+        txtStatus = findViewById(R.id.textView8);
+        txttimeGiao = findViewById(R.id.txt_TrangThaiThoiGian);
+
+//        ChboxSpeed = findViewById(R.id.chk_Gap);
+        txtSum = findViewById(R.id.txtSum);
+        btntxtOrder = findViewById(R.id.btntxtOrder);
+
+        note = findViewById(R.id.NoteInfo);
+        rc = findViewById(R.id.ListRecyclerdetail);
+        enableEdt = findViewById(R.id.enableEdt);
+
+        //<editor-fold desc=button Save or Detail>
+        btntxtOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (newOr) {
+                    dh.salesMan = user.getEmployeeId();
+                    dh.saleLines = new ArrayList<>();
+                    dh.saleLines.addAll(adapter.getList());
+                    dservice.saveOrder(dh).enqueue(new Callback<Integer>() {
+                        @Override
+                        public void onResponse(Call<Integer> call, Response<Integer> response) {
+                            Intent it = new Intent(OrderDetailActivity.this, MainActivity.class);
+                            it.putExtra(Constants.StartFromDetail, "");
+                            startActivity(it);
+                            OrderDetailActivity.this.finish();
+                        }
+
+                        @Override
+                        public void onFailure(Call<Integer> call, Throwable t) {
+                            Toast.makeText(OrderDetailActivity.this, "fail to save order: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    if (ballssum != null) {
+                        ballssum.setTotalBalance(ballssum.getTotalBalance() + dh.amount);
+                    } else {
+                        Date d = new Date();
+                        ballssum = new BalanceSum();
+                        ballssum.setSalesDate(UtilBasic.getSdf().format(d));
+                        ballssum.setSalesMan(user.getEmployeeId());
+                        ballssum.setTotalBalance(dh.amount);
+                    }
+
+                    dservice.syncBallancing(ballssum).enqueue(new Callback<BalanceSum>() {
+                        @Override
+                        public void onResponse(Call<BalanceSum> call, Response<BalanceSum> response) {
+                            String bal = UtilBasic.ObjectToJson(response.body());
+                            PreferenceUtils.saveBallanc(OrderDetailActivity.this, bal);
+                        }
+
+                        @Override
+                        public void onFailure(Call<BalanceSum> call, Throwable t) {
+                            Toast.makeText(OrderDetailActivity.this, "fail to save ballancing: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                } else onBackPressed();
+            }
+        });
+
+        //</editor-fold> button Save or Detail
+        adapter = new DetailRCview(this);
+        LinearLayoutManager lm = new LinearLayoutManager(this);
+        lm.setOrientation(LinearLayoutManager.VERTICAL);
+
+        rc.setLayoutManager(lm);
+        rc.setAdapter(adapter);
+        rc.setHasFixedSize(true);
+        dbHelp = new DataRemoteHelper(this);
+        user = UtilBasic.getUser(this);
+
+        String ball = PreferenceUtils.getBallance(this);
+        if (ball != null)
+            ballssum = UtilBasic.getGs().fromJson(ball, BalanceSum.class);
+    }
+
+    private void parseOrder() {
+        Bundle b = getIntent().getExtras();
+        String orM = b.getString(Constants.OrderObj);
+        if (b.getInt(Constants.OrderRequest) == Constants.OldOrder)
+            newOr = false;
+        else newOr = true;
+
+        if (orM.length() > 5)
+            dh = UtilBasic.getGs().fromJson(orM, Order.class);
+        else
+            Toast.makeText(this, "Chưa có đơn hàng, hoặc có lỗi dữ liệu", Toast.LENGTH_LONG).show();
+        showOrder();
+    }
+
+    private void showOrder() {
+        if (dh == null) {
+            Toast.makeText(this, "Chưa có đơn hàng, hoặc có lỗi dữ liệu", Toast.LENGTH_LONG).show();
+        } else {
+            BindOrder();
+        }
+    }
+
+    private void BindOrder() {
+        if (newOr) {
+            statOrd = UtilBasic.getStatusOrder(Constants.inProgress, this);
+            Date d = new Date();
+            dh.saleStatus = Constants.inProgress;
+            dh.deliTime = UtilBasic.getSdf().format(d);
+            dh.amount = 0;
+            txtorderCode.setText("đặt hàng");
+            for (SaleLine dt : dh.saleLines) {
+                dt.lineAmount = dt.quantity * dt.salePrice;
+                dh.amount += dt.lineAmount;
+            }
+            btntxtOrder.setText(Constants.SendOrder);
+        } else {
+            statOrd = UtilBasic.getStatusOrder(dh.saleStatus, this);
+            btntxtOrder.setText(Constants.Back);
+//            txtorderCode.setText(dh.lotId+"");
+        }
+
+        txtAddressgiao.setText(dh.shipTo);
+        txtNameShop.setText(dh.shopName);
+        txtphoneShop.setText(dh.shopPhone);
+        txtStatus.setText(statOrd.Content);
+        txtStatus.setTextColor(statOrd.MyColor);
+
+        txttimeGiao.setText(dh.deliTime);
+//        ChboxSpeed.setChecked(dh.loaiYeuCau > 0);
+        Log.d("<<<BINDD", "BINDD");
+
+        note.setText(dh.description);
+        txtSum.setText(UtilBasic.getNumberFormat().format(dh.amount));
+        if (newOr)
+            adapter.update(dh.saleLines);
+        else loadDetails();
+    }
+
+    private void loadDetails() {
+        dbHelp.getDetails(dh.saleID);
+    }
+
+    @Override
+    public void Succeed(Response e) {
+        try {
+            adapter.update((List<SaleLine>) e.body());
+        } catch (Exception ex) {
+            Toast.makeText(this, "Order  detail: Lỗi data \n" + ex.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void Fail(Throwable t) {
+        Toast.makeText(this, "Lỗi kết nối\n" + t.getMessage(), Toast.LENGTH_SHORT).show();
+    }
+}

@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">Sskey - DMS</string>
+    <string name="slogan">Mọi lúc mọi nơi</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_shop">Mua hàng</string>
+    <string name="title_gifts">Tiền hàng</string>
+    <string name="title_cart">Giỏ hàng</string>
+    <string name="title_donhang">Đơn hàng</string>
+    <string name="title_profile">Tài khoản</string>
+    <string name="email">Gmail</string>
+
+
+    <string-array name="status_array">
+        <item>Tất cả</item>
+        <item>Đặt hàng</item>
+        <item>Cửa hàng xác nhận</item>
+        <item>Đang giao</item>
+        <item>Đã giao</item>
+        <item>Giao hàng thất bại</item>
+        <item>Đã hủy</item>
+    </string-array>
+
+    <string-array name="status_array_shop">
+        <item>Cửa hàng xác nhận</item>
+        <item>Đã hủy</item>
+    </string-array>
+
+    <string-array name="status_array_post">
+        <item>Đang giao</item>
+        <item>Đã giao</item>
+        <item>Giao hàng thất bại</item>
+    </string-array>
+</resources>

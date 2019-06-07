@@ -1,0 +1,126 @@
+package com.example.sskey.dms.service;
+
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.app.Service;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
+import android.util.Log;
+
+import com.example.sskey.dms.OrderDetail.IOrderSynchronize;
+import com.example.sskey.dms.OrderDetail.InotifySskey;
+import com.example.sskey.dms.OrderDetail.SSkeyNotify;
+import com.example.sskey.dms.Order.OrderSynchronize;
+import com.example.sskey.dms.Utils.CallbackSSk;
+import com.example.sskey.dms.Utils.UtilBasic;
+import com.sskey.dms.model.Customer;
+import com.sskey.dms.model.Order;
+import com.sskey.dms.model.UserInFoDTO;
+
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class OrderService extends Service implements CallbackSSk<List<Order>> {
+
+    private IOrderSynchronize mySynchronize;
+    private UserInFoDTO user;
+    private InotifySskey noti;
+    private static Context CTX;
+    public final static int ServiceID = 791286;
+
+    Handler h = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            Timer t = new Timer();
+            t.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    mySynchronize.readNewOrder();
+                }
+            }, 3000, 8000);
+        }
+    };
+
+    @Override
+    public void onCreate() {
+        CTX = getBaseContext();
+        user = UtilBasic.getUser(this);
+        mySynchronize = new OrderSynchronize(user, this, this);
+        noti = new SSkeyNotify(this);
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+//        noti.setUpBlk();
+//        startForeground(noti.getNotifyID(),noti.getNotification());
+
+        if (user != null) {
+//            mySynchronize.readNewOrder();
+            setLoopNotify();
+            Log.e("<<ServiceSynchronize>>", "Order get");
+        } else {
+            Log.e("<<ServiceSynchronize>>", "Order null user");
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    user = UtilBasic.getUser(CTX);
+                }
+            }, 15000);
+        }
+        return START_STICKY;
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+    @Override
+    public void Success(List<Order> response, String message) {
+        if (message.contains("OK")) {
+            if (response.size() > 0) {
+                noti.setUpNotiSsk("Bạn có thông báo cho " + response.size() + " đơn hàng " + message.substring(message.indexOf("::") + 2));
+                noti.showNotify();
+                Log.e("<<Service-Success>>", "Order success");
+            } else {
+                Log.e("<<Service-Success>>", "000000");
+            }
+        } else Log.e("<<Service-Errordata>>", message);
+        stopSelf();
+    }
+
+    @Override
+    public void Fail(Throwable throwable) {
+        Log.e("<<Service-Fail>>", throwable.getMessage());
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.e("<<Service-Destroy>>", "Order detroy");
+        setLoops();
+//        super.onDestroy();
+    }
+
+    //<editor-fold Default=Collapse desc = "set loop">
+    private void setLoops() {
+        Intent it = new Intent(CTX, OrderService.class);
+
+        PendingIntent peservcie = PendingIntent.getService(CTX, OrderService.ServiceID, it, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager alm = (AlarmManager) CTX.getSystemService(Context.ALARM_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            alm.setAlarmClock(new AlarmManager.AlarmClockInfo(System.currentTimeMillis() + 3000, peservcie), peservcie);
+        alm.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 3000, peservcie);
+
+    }
+
+    private void setLoopNotify() {
+        h.sendEmptyMessage(0);
+    }
+    //</editor-fold>
+}

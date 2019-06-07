@@ -1,0 +1,13 @@
+package com.sskey.dms.model;
+
+public class SaleLine {
+    public String lotID;
+    public String saleID;
+    public String lineNum;
+    public String itemID;
+    public String quantity;
+    public String salePrice;
+    public String lineAmount;
+    public String inventory;
+    public String saleOrder;
+}

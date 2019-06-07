@@ -1,0 +1,86 @@
+package com.sskey.dms.model;
+
+import java.util.List;
+
+public class NguoiDung {
+   public String MaNguoiDung;
+    public String TenNguoiDung;
+    public String  SoDienThoai;
+    public String MatKhau;
+    public int  LoaiNguoiDung;
+    public String DiaChi;
+    public int Staffin;
+    public String Email;
+
+    public List<DonHang_Master> DonHangs;
+
+    public NguoiDung() {
+    }
+
+    public NguoiDung(String maNguoiDung, String tenNguoiDung, String soDienThoai, String matKhau, int loaiNguoiDung, String diaChi) {
+        MaNguoiDung = maNguoiDung;
+        TenNguoiDung = tenNguoiDung;
+        SoDienThoai = soDienThoai;
+        MatKhau = matKhau;
+        LoaiNguoiDung = loaiNguoiDung;
+        DiaChi = diaChi;
+    }
+
+    @Override
+    public String toString() {
+        return this.TenNguoiDung;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.parseInt(this.MaNguoiDung);
+    }
+
+    public String getMaNguoiDung() {
+        return MaNguoiDung;
+    }
+
+    public void setMaNguoiDung(String maNguoiDung) {
+        MaNguoiDung = maNguoiDung;
+    }
+
+    public String getTenNguoiDung() {
+        return TenNguoiDung;
+    }
+
+    public void setTenNguoiDung(String tenNguoiDung) {
+        TenNguoiDung = tenNguoiDung;
+    }
+
+    public String getSoDienThoai() {
+        return SoDienThoai;
+    }
+
+    public void setSoDienThoai(String soDienThoai) {
+        SoDienThoai = soDienThoai;
+    }
+
+    public String getMatKhau() {
+        return MatKhau;
+    }
+
+    public void setMatKhau(String matKhau) {
+        MatKhau = matKhau;
+    }
+
+    public int getLoaiNguoiDung() {
+        return LoaiNguoiDung;
+    }
+
+    public void setLoaiNguoiDung(int loaiNguoiDung) {
+        LoaiNguoiDung = loaiNguoiDung;
+    }
+
+    public String getDiaChi() {
+        return DiaChi;
+    }
+
+    public void setDiaChi(String diaChi) {
+        DiaChi = diaChi;
+    }
+}

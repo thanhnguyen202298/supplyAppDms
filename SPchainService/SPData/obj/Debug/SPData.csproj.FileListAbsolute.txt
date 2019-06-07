@@ -1,0 +1,12 @@
+D:\thanh\SupplyChain\SPchainService\SPData\bin\Debug\SPData.dll.config
+D:\thanh\SupplyChain\SPchainService\SPData\bin\Debug\SPData.dll
+D:\thanh\SupplyChain\SPchainService\SPData\bin\Debug\SPData.pdb
+D:\thanh\SupplyChain\SPchainService\SPData\bin\Debug\EntityFramework.dll
+D:\thanh\SupplyChain\SPchainService\SPData\bin\Debug\EntityFramework.SqlServer.dll
+D:\thanh\SupplyChain\SPchainService\SPData\bin\Debug\EntityFramework.xml
+D:\thanh\SupplyChain\SPchainService\SPData\bin\Debug\EntityFramework.SqlServer.xml
+D:\thanh\SupplyChain\SPchainService\SPData\obj\Debug\SPData.csprojAssemblyReference.cache
+D:\thanh\SupplyChain\SPchainService\SPData\obj\Debug\SPData.csproj.CoreCompileInputs.cache
+D:\thanh\SupplyChain\SPchainService\SPData\obj\Debug\SPData.csproj.CopyComplete
+D:\thanh\SupplyChain\SPchainService\SPData\obj\Debug\SPData.dll
+D:\thanh\SupplyChain\SPchainService\SPData\obj\Debug\SPData.pdb
